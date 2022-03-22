@@ -2,10 +2,10 @@ const fs = require('fs')
 const { spawn } = require('child_process')
 const path = require('path')
 
-const MACFUSE_VERSION = '4.2.1'
-const MACFUSE = path.join(__dirname, 'macfuse')
-const lib = path.join(MACFUSE, 'libfuse.2.dylib')
-const include = path.join(MACFUSE, 'include')
+const MACFUSE_VERSION = '4.2.1';
+const USR = path.join(path.sep, 'usr', 'local');
+const lib = path.join(USR, 'lib', 'libfuse.2.dylib')
+const include = path.join(USR, 'include', 'fuse')
 
 module.exports = {
   lib,
@@ -27,7 +27,7 @@ function configure (cb) {
     if (yes) return cb(null)
     runAll([
       [ 'mkdir', '-p', '/Library/Filesystems/macfuse.fs' ],
-      [ 'tar', 'xzf', path.join(MACFUSE, 'macfuse.fs.tgz'), '-C', '/Library/Filesystems/macfuse.fs' ],
+      [ 'cp', '-R', path.join('Library', 'StagedExtensions', 'Library', 'Filesystems', 'macfuse.fs'), '/Library/Filesystems/macfuse.fs' ],
       [ 'chown', '-R', 'root:wheel', '/Library/Filesystems/macfuse.fs' ],
       [ 'chmod', '+s', '/Library/Filesystems/macfuse.fs/Contents/Resources/load_macfuse' ],
       writeConfigured,
